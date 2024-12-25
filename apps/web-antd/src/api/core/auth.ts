@@ -5,16 +5,24 @@ export namespace AuthApi {
   export interface LoginParams {
     password?: string;
     username?: string;
+    grant_type?: string;
   }
 
   /** 登录接口返回值 */
   export interface LoginResult {
-    accessToken: string;
+    access_token: string;
+    refresh_token: string;
+    token_type: string;
+    expires_in: number;
+    username: string;
   }
 
   export interface RefreshTokenResult {
-    data: string;
-    status: number;
+    access_token: string;
+    refresh_token: string;
+    token_type: string;
+    expires_in: number;
+    username: string;
   }
 }
 
@@ -22,7 +30,26 @@ export namespace AuthApi {
  * 登录
  */
 export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/auth/login', data);
+  return requestClient.post<AuthApi.LoginResult>('/oauth2/token', data, {
+    headers: { Authorization: 'Basic 1=1' },
+    transformRequest: [
+      function (data, headers) {
+        // 对发送的 data 进行任意转换处理
+        headers.Authorization = 'Basic MTox';
+        data.grant_type = 'authorization_pt_user';
+        const formData = new FormData();
+        Object.keys(data).forEach((key) => formData.append(key, data[key]));
+        return formData;
+      },
+    ],
+    transformResponse: [
+      function (data) {
+        // 对接收的 data 进行任意转换处理
+        const parse = JSON.parse(data);
+        return { data: parse, code: 0 };
+      },
+    ],
+  });
 }
 
 /**
