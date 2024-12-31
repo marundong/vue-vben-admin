@@ -29,7 +29,8 @@ const scopeComplete = execSync('git status --porcelain || true')
  * @type {import('cz-git').UserConfig}
  */
 const userConfig = {
-  extends: ['@commitlint/config-conventional'],
+  // extends: ['@commitlint/config-conventional'],
+  extends: ['gitmoji'],
   plugins: ['commitlint-plugin-function-rules'],
   prompt: {
     /** @use `pnpm commit :f` */
@@ -40,9 +41,9 @@ const userConfig = {
       r: 'docs: update README',
       s: 'style: update code format',
     },
-    allowCustomIssuePrefixs: false,
+    allowCustomIssuePrefix: false,
     // scopes: [...scopes, 'mock'],
-    allowEmptyIssuePrefixs: false,
+    allowEmptyIssuePrefix: false,
     customScopesAlign: scopeComplete ? 'bottom' : 'top',
     defaultScope: scopeComplete,
     // English

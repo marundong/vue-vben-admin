@@ -1,3 +1,5 @@
+import { useAccessStore } from '@vben/stores';
+
 import { baseRequestClient, requestClient } from '#/api/request';
 
 export namespace AuthApi {
@@ -42,13 +44,6 @@ export async function loginApi(data: AuthApi.LoginParams) {
         return formData;
       },
     ],
-    transformResponse: [
-      function (data) {
-        // 对接收的 data 进行任意转换处理
-        const parse = JSON.parse(data);
-        return { data: parse, code: 0 };
-      },
-    ],
   });
 }
 
@@ -56,9 +51,28 @@ export async function loginApi(data: AuthApi.LoginParams) {
  * 刷新accessToken
  */
 export async function refreshTokenApi() {
-  return baseRequestClient.post<AuthApi.RefreshTokenResult>('/auth/refresh', {
-    withCredentials: true,
-  });
+  const accessStore = useAccessStore();
+  return baseRequestClient.post<AuthApi.RefreshTokenResult>(
+    '/oauth2/token',
+    {
+      withCredentials: true,
+      grant_type: 'refresh_token',
+      refresh_token: accessStore.refreshToken,
+    },
+    {
+      headers: { Authorization: 'Basic MTox' },
+      transformRequest: [
+        function (data, headers) {
+          // 对发送的 data 进行任意转换处理
+          headers.Authorization = 'Basic MTox';
+          data.grant_type = 'refresh_token';
+          const formData = new FormData();
+          Object.keys(data).forEach((key) => formData.append(key, data[key]));
+          return formData;
+        },
+      ],
+    },
+  );
 }
 
 /**

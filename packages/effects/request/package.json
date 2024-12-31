@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@vben/locales": "workspace:*",
+    "@vben/stores": "workspace:*",
     "@vben/utils": "workspace:*",
     "axios": "catalog:"
   },

@@ -2,6 +2,7 @@ import type { RequestClient } from './request-client';
 import type { MakeErrorMessageFn, ResponseInterceptorConfig } from './types';
 
 import { $t } from '@vben/locales';
+import { useAccessStore } from '@vben/stores';
 
 import axios from 'axios';
 
@@ -41,6 +42,12 @@ export const authenticateResponseInterceptor = ({
         });
       }
 
+      const accessStore = useAccessStore();
+      const refreshToken = accessStore.refreshToken;
+      if (refreshToken === null) {
+        await doReAuthenticate();
+        throw error;
+      }
       // 标记开始刷新 token
       client.isRefreshing = true;
       // 标记当前请求为重试请求，避免无限循环

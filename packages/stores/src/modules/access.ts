@@ -4,6 +4,7 @@ import type { RouteRecordRaw } from 'vue-router';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
 type AccessToken = null | string;
+type RefreshToken = null | string;
 
 interface AccessState {
   /**
@@ -33,7 +34,7 @@ interface AccessState {
   /**
    * 登录 accessToken
    */
-  refreshToken: AccessToken;
+  refreshToken: RefreshToken;
 }
 
 /**

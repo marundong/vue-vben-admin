@@ -29,5 +29,8 @@
     "commitlint-plugin-function-rules": "catalog:",
     "cz-git": "catalog:",
     "czg": "catalog:"
+  },
+  "devDependencies": {
+    "commitlint-config-gitmoji": "^2.3.1"
   }
 }
